@@ -1,0 +1,12 @@
+node_modules
+.next
+.env.local
+.env*.local
+public/generated
+public/renders
+data/jobs
+npm-debug.log*
+dev-server.log
+tsconfig.tsbuildinfo
+.DS_Store
+.vercel

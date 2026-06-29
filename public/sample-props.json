@@ -1,0 +1,27 @@
+{
+  "input": {
+    "marketingType": "pain_point",
+    "productName": "FlowNote AI",
+    "sellingPoints": ["自动整理会议纪要", "提炼待办事项", "一键生成客户跟进邮件"],
+    "targetAudience": "需要频繁开会和跟进客户的销售团队",
+    "styleKeywords": ["高效", "专业", "清爽", "科技感"],
+    "aspectRatio": "9:16"
+  },
+  "script": {
+    "title": "FlowNote AI 痛点解决方案",
+    "hook": "销售团队，还在被低效拖慢吗？",
+    "cta": "马上试试",
+    "totalDurationSeconds": 15,
+    "scenes": [
+      { "id": "scene-1", "start": 0, "end": 3, "headline": "还在手动处理？", "subtitle": "会议纪要、待办和跟进邮件每天都在占用时间", "voiceover": "", "visualDirection": "", "imagePrompt": "", "videoPrompt": "" },
+      { "id": "scene-2", "start": 3, "end": 7, "headline": "FlowNote AI", "subtitle": "自动整理会议纪要，关键信息一屏看清", "voiceover": "", "visualDirection": "", "imagePrompt": "", "videoPrompt": "" },
+      { "id": "scene-3", "start": 7, "end": 11, "headline": "提炼待办事项", "subtitle": "把下一步动作直接变成客户跟进节奏", "voiceover": "", "visualDirection": "", "imagePrompt": "", "videoPrompt": "" },
+      { "id": "scene-4", "start": 11, "end": 15, "headline": "少一点重复", "subtitle": "多一点真正的增长", "voiceover": "", "visualDirection": "", "imagePrompt": "", "videoPrompt": "" }
+    ]
+  },
+  "assets": [
+    { "sceneId": "upload-1", "type": "image", "path": "sample-assets/product.svg", "publicUrl": "/sample-assets/product.svg" },
+    { "sceneId": "upload-2", "type": "image", "path": "sample-assets/dashboard.svg", "publicUrl": "/sample-assets/dashboard.svg" },
+    { "sceneId": "upload-3", "type": "image", "path": "sample-assets/card.svg", "publicUrl": "/sample-assets/card.svg" }
+  ]
+}
