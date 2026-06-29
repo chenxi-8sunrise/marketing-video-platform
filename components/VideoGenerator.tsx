@@ -93,18 +93,19 @@ export function VideoGenerator() {
     event.target.value = "";
     if (selected.length === 0) return;
 
-    if (selected.length > 3) {
-      setError("请上传 1-3 张图片素材。");
-      return;
-    }
-
     const invalid = selected.find((file) => !allowedTypes.has(file.type));
     if (invalid) {
       setError("素材只支持 JPG、PNG、WebP 图片。");
       return;
     }
 
-    setFiles(selected);
+    const nextFiles = [...files, ...selected];
+    if (nextFiles.length > 3) {
+      setError("最多只能上传 3 张图片素材，请先移除多余图片。");
+      return;
+    }
+
+    setFiles(nextFiles);
     setError(null);
   }
 
@@ -141,8 +142,9 @@ export function VideoGenerator() {
       });
       const data = (await res.json()) as VideoJob | { error: string };
       if (!res.ok) throw new Error("error" in data ? data.error : "创建任务失败");
-      setJobId((data as VideoJob).id);
-      setJob(data as VideoJob);
+      const nextJob = data as VideoJob;
+      setJob(nextJob);
+      setJobId(nextJob.status === "done" || nextJob.status === "failed" ? null : nextJob.id);
     } catch (err) {
       setError(err instanceof Error ? err.message : "创建任务失败");
     } finally {

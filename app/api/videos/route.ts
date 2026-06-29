@@ -2,9 +2,10 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { generateLocalMarketingScript } from "@/lib/localGenerator";
 import { createJob, runPipeline } from "@/lib/pipeline";
 import { ensureJobFolders, generatedDir, saveJob } from "@/lib/storage";
-import type { GeneratedAsset } from "@/lib/types";
+import type { GeneratedAsset, ProductInput, VideoJob } from "@/lib/types";
 
 export const runtime = "nodejs";
 
@@ -55,6 +56,17 @@ function uploadedImageFiles(formData: FormData) {
   return files;
 }
 
+function parseInput(formData: FormData): ProductInput {
+  return InputSchema.parse({
+    marketingType: stringField(formData, "marketingType"),
+    productName: stringField(formData, "productName"),
+    sellingPoints: stringArrayField(formData, "sellingPoints"),
+    targetAudience: stringField(formData, "targetAudience"),
+    styleKeywords: stringArrayField(formData, "styleKeywords"),
+    aspectRatio: stringField(formData, "aspectRatio")
+  });
+}
+
 async function saveUploadedImages(jobId: string, files: File[]): Promise<GeneratedAsset[]> {
   const targetDir = generatedDir(jobId);
   await fs.mkdir(targetDir, { recursive: true });
@@ -78,6 +90,20 @@ async function saveUploadedImages(jobId: string, files: File[]): Promise<Generat
   return assets;
 }
 
+function createOnlineDemoJob(input: ProductInput): VideoJob {
+  const now = new Date().toISOString();
+  return {
+    id: crypto.randomUUID(),
+    status: "done",
+    message: "线上演示版已生成文案和素材预览。MP4 渲染请在本地版本运行。",
+    input,
+    script: generateLocalMarketingScript(input),
+    assets: [],
+    createdAt: now,
+    updatedAt: now
+  };
+}
+
 export async function POST(request: NextRequest) {
   try {
     const contentType = request.headers.get("content-type") ?? "";
@@ -86,15 +112,12 @@ export async function POST(request: NextRequest) {
     }
 
     const formData = await request.formData();
-    const input = InputSchema.parse({
-      marketingType: stringField(formData, "marketingType"),
-      productName: stringField(formData, "productName"),
-      sellingPoints: stringArrayField(formData, "sellingPoints"),
-      targetAudience: stringField(formData, "targetAudience"),
-      styleKeywords: stringArrayField(formData, "styleKeywords"),
-      aspectRatio: stringField(formData, "aspectRatio")
-    });
+    const input = parseInput(formData);
     const files = uploadedImageFiles(formData);
+
+    if (process.env.VERCEL === "1") {
+      return NextResponse.json(createOnlineDemoJob(input), { status: 200 });
+    }
 
     const job = createJob(input);
     await ensureJobFolders(job.id);
